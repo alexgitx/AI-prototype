@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+on: 
+  push:
+    branches: 
+        - Backend-preprod
+  pull_request:
+    branches:
+        - Backend-preprod
+env:
+  PORT: 8080:8080
+  IMAGE_NAME: ai-prototipe-backend-preprod
+  
+jobs:
+  runBackend:
+    runs-on: self-hosted
+    steps:
+        - uses: actions/checkout@v2
+        - name: Stop and rm the Docker image
+          run: docker rm $(docker stop $(docker ps -a -q --filter ancestor=$IMAGE_NAME --format="{{.ID}}"))
+          continue-on-error: true
+        - name: Build the Docker image
+          run: docker build . --file ./Dockerfile --tag $IMAGE_NAME
+        - name: Run the Docker image
+          run: >
+            docker run -it -dp $PORT
+            # -v /home/ubuntu/bchainv2/fabric-samples/asset-transfer-basic/application-javascript:/usr/src/app/asset-transfer-basic/application-javascript
+            # -v /home/ubuntu/bchainv2/fabric-samples/test-network:/usr/src/app/test-network
+            --network host
+            $IMAGE_NAME
