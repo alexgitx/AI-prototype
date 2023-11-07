@@ -3,13 +3,13 @@ name: Docker Image CI
 on: 
   push:
     branches: 
-        - Backend-preprod
+        - Backend
   pull_request:
     branches:
-        - Backend-preprod
+        - Backend
 env:
   PORT: 8080:8080
-  IMAGE_NAME: ai-prototipe-backend-preprod
+  IMAGE_NAME: ai-prototype-backend
   
 jobs:
   runBackend:
